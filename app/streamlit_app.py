@@ -145,29 +145,27 @@ with st.sidebar:
     st.caption("Models achieve near-perfect accuracy on this synthetic dataset due to clear lexical cues.")
 
 # Main input
+if "review_input" not in st.session_state:
+    st.session_state["review_input"] = ""
+
+def set_example(text):
+    st.session_state["review_input"] = text
+
 col1, col2 = st.columns([2, 1])
 with col1:
     review = st.text_area(
         "Customer Review",
         height=150,
         placeholder="Example: Excellent product, works perfectly and battery life is great!",
-        value="",
+        key="review_input"
     )
 with col2:
     st.markdown("**Quick examples**")
-    if st.button("😊 Positive example"):
-        st.session_state["example"] = "Loved it! Perfect purchase, picture quality is sharp and delivery was fast."
-    if st.button("😐 Neutral example"):
-        st.session_state["example"] = "Decent product but nothing special. Average quality for the price."
-    if st.button("😞 Negative example"):
-        st.session_state["example"] = "Waste of money, do not recommend. Received a defective product."
+    st.button("😊 Positive example", on_click=set_example, args=("Loved it! Perfect purchase, picture quality is sharp and delivery was fast.",))
+    st.button("😐 Neutral example", on_click=set_example, args=("Decent product but nothing special. Average quality for the price.",))
+    st.button("😞 Negative example", on_click=set_example, args=("Waste of money, do not recommend. Received a defective product.",))
 
-if "example" in st.session_state:
-    review = st.session_state.pop("example")
-    # Force rerun with example by setting in text_area via session - simpler: show in expander
-    st.info(f"Using example: _{review}_")
-
-predict_btn = st.button("🔍 Analyze Sentiment", type="primary", use_container_width=True)
+predict_btn = st.button("🔍 Analyze Sentiment", type="primary", width="stretch")
 
 if predict_btn and review.strip():
     use_dl = "Deep Learning" in model_choice
@@ -207,7 +205,7 @@ with c1:
     try:
         import pandas as pd
         ml = pd.read_csv(ROOT / "reports" / "ml_results.csv", index_col=0)
-        st.dataframe(ml.style.format("{:.4f}"), use_container_width=True)
+        st.dataframe(ml.style.format("{:.4f}"), width="stretch")
     except Exception:
         st.write("ML results: Accuracy / F1 ≈ 1.00 (synthetic data is highly separable)")
 
@@ -215,7 +213,7 @@ with c2:
     st.markdown("**Deep Learning**")
     try:
         dl = pd.read_csv(ROOT / "reports" / "dl_results.csv", index_col=0)
-        st.dataframe(dl.style.format("{:.4f}"), use_container_width=True)
+        st.dataframe(dl.style.format("{:.4f}"), width="stretch")
     except Exception:
         st.write("DL (BiLSTM / Dense) also reach near-perfect Macro-F1 on this dataset.")
 
