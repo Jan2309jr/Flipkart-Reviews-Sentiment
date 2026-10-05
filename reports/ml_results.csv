@@ -1,0 +1,5 @@
+,Accuracy,Precision,Recall,F1
+NaiveBayes,0.9998,0.9999,0.9997,0.9998
+LogisticRegression,1.0,1.0,1.0,1.0
+LinearSVM,1.0,1.0,1.0,1.0
+Tuned_LR,1.0,1.0,1.0,1.0
